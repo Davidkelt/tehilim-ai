@@ -109,6 +109,62 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Temporary bulk import endpoint for migrating cached data
+// Protected by a secret key — remove after migration is complete
+import { getDb } from './db/database.js';
+app.post('/api/import-cache', express.json({ limit: '50mb' }), (req, res) => {
+  const secret = req.headers['x-import-secret'];
+  if (secret !== process.env.IMPORT_SECRET) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  const { analyses, psalms, moods } = req.body;
+  const db = getDb();
+  let imported = { analyses: 0, psalms: 0, moods: 0 };
+
+  if (analyses?.length) {
+    const stmt = db.prepare(
+      `INSERT OR REPLACE INTO analyses (chapter, age_group, analysis_json, created_at) VALUES (?, ?, ?, ?)`
+    );
+    const tx = db.transaction(() => {
+      for (const a of analyses) {
+        stmt.run(a.chapter, a.age_group, a.analysis_json, a.created_at);
+        imported.analyses++;
+      }
+    });
+    tx();
+  }
+
+  if (psalms?.length) {
+    const stmt = db.prepare(
+      `INSERT OR REPLACE INTO psalms (chapter, verses_json, fetched_at) VALUES (?, ?, ?)`
+    );
+    const tx = db.transaction(() => {
+      for (const p of psalms) {
+        stmt.run(p.chapter, p.verses_json, p.fetched_at);
+        imported.psalms++;
+      }
+    });
+    tx();
+  }
+
+  if (moods?.length) {
+    const stmt = db.prepare(
+      `INSERT OR REPLACE INTO mood_tags (chapter, tags_json) VALUES (?, ?)`
+    );
+    const tx = db.transaction(() => {
+      for (const m of moods) {
+        stmt.run(m.chapter, m.tags_json);
+        imported.moods++;
+      }
+    });
+    tx();
+  }
+
+  console.log('[Import] Imported:', imported);
+  res.json({ success: true, imported });
+});
+
 // API routes
 app.use('/api/psalms', psalmsRoutes);
 app.use('/api/analysis', analysisLimiter, analysisRoutes);
