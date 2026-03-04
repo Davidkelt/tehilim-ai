@@ -9,8 +9,8 @@ let db: Database.Database;
 
 export function getDb(): Database.Database {
   if (!db) {
-    // השתמש בנתיב מלא מה-volume – fallback רק להתפתחות מקומית
-    const dbPath = process.env.DATABASE_PATH || '/data/tehillim.db';
+    // DATABASE_PATH env var for Railway volume, fallback to project root for local dev
+    const dbPath = process.env.DATABASE_PATH || path.resolve(__dirname, '..', '..', 'tehillim.db');
 
     // יצירת התיקייה אם היא לא קיימת (זה הפתרון לשגיאה!)
     const dbDir = path.dirname(dbPath);
