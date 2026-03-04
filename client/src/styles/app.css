@@ -1,0 +1,336 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e3a5f;
+  --color-primary-light: #2a5280;
+  --color-primary-dark: #142842;
+  --color-accent: #d4a843;
+  --color-accent-light: #e8c36b;
+  --color-accent-dark: #b8912e;
+  --color-cream: #faf7f0;
+  --color-cream-dark: #f0ead8;
+  --color-charcoal: #1a1a2e;
+  --color-charcoal-light: #252542;
+  --color-charcoal-lighter: #2d2d4a;
+
+  --font-body: "Frank Ruhl Libre", serif;
+  --font-heading: "Heebo", sans-serif;
+}
+
+/* Base styles */
+html {
+  direction: rtl;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Safe areas for native app (notch, status bar, gesture navigation) */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* Light mode (default) */
+:root {
+  --bg-primary: var(--color-cream);
+  --bg-secondary: #ffffff;
+  --bg-card: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #8888aa;
+  --border-color: #e8e4d8;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Dark mode */
+.dark {
+  --bg-primary: var(--color-charcoal);
+  --bg-secondary: var(--color-charcoal-light);
+  --bg-card: var(--color-charcoal-lighter);
+  --text-primary: #e8e4d8;
+  --text-secondary: #b0adc0;
+  --text-muted: #7a7890;
+  --border-color: #3a3a5a;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════ */
+/*  ANIMATIONS                                         */
+/* ═══════════════════════════════════════════════════ */
+
+/* Loading skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 25%,
+    var(--bg-secondary) 50%,
+    var(--border-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Slide-up animation for panels */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Slide-down exit animation */
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.slide-down {
+  animation: slideDown 0.3s ease-in forwards;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+/* Scale spring animation */
+@keyframes scaleSpring {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.3); }
+  50% { transform: scale(0.9); }
+  70% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.scale-spring {
+  animation: scaleSpring 0.4s ease-out;
+}
+
+/* Heart burst animation */
+@keyframes heartBurst {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.4); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.2); }
+  60% { transform: scale(1); }
+}
+
+.heart-burst {
+  animation: heartBurst 0.5s ease-out;
+}
+
+/* Glow pulse (for verse tap) */
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 0 0 rgba(212,168,67,0.4); }
+  50% { box-shadow: 0 0 12px 4px rgba(212,168,67,0.2); }
+  100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
+}
+
+.glow-pulse {
+  animation: glowPulse 0.6s ease-out;
+}
+
+/* Toast animations */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.9);
+  }
+}
+
+.toast-enter {
+  animation: toastIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+.toast-exit {
+  animation: toastOut 0.3s ease-in forwards;
+}
+
+/* FAB pulse animation */
+@keyframes fabPulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(212,168,67,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(212,168,67,0.6); }
+}
+
+.fab-pulse {
+  animation: fabPulse 3s ease-in-out infinite;
+}
+
+/* Gradient shift for daily psalm */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+/* Streak badge glow */
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,168,67,0); }
+  50% { box-shadow: 0 0 12px 2px rgba(212,168,67,0.3); }
+}
+
+.streak-badge-glow {
+  animation: badgeGlow 2s ease-in-out infinite;
+}
+
+/* Streak fire bounce */
+@keyframes fireFlicker {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.1) rotate(-3deg); }
+  50% { transform: scale(1.05) rotate(2deg); }
+  75% { transform: scale(1.15) rotate(-2deg); }
+}
+
+.streak-fire {
+  display: inline-block;
+  animation: fireFlicker 1.5s ease-in-out infinite;
+}
+
+/* Achievement icon bounce */
+@keyframes achievementBounce {
+  0% { transform: scale(0) rotate(-10deg); }
+  50% { transform: scale(1.2) rotate(5deg); }
+  70% { transform: scale(0.9) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.achievement-icon-bounce {
+  animation: achievementBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Achievement toast enter */
+@keyframes achievementToastEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.achievement-toast-enter {
+  animation: achievementToastEnter 0.5s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+/* Progress ring */
+.progress-ring-circle {
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+
+/* Read indicator checkmark */
+@keyframes checkPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.check-pop {
+  animation: checkPop 0.3s ease-out;
+}
+
+/* Verse tap highlight */
+.verse-highlight {
+  transition: background-color 0.3s ease;
+}
+
+.verse-highlight:active {
+  background-color: rgba(212,168,67,0.08);
+  border-radius: 12px;
+}
+
+/* Hebrew text with nikud should not break incorrectly */
+.hebrew-text {
+  line-height: 2;
+  word-spacing: 0.1em;
+  letter-spacing: 0.01em;
+}
+
+/* Remove nikud class */
+.no-nikud {
+  font-feature-settings: "liga" 0;
+}
