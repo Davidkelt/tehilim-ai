@@ -1,4 +1,5 @@
-import { usePsalms } from '../hooks/usePsalm';
+import { useState } from 'react';
+import { usePsalms, useDaily } from '../hooks/usePsalm';
 import { useStreaks } from '../hooks/useStreaks';
 import DailyPsalm from '../components/DailyPsalm';
 import ChapterGrid from '../components/ChapterGrid';
@@ -6,11 +7,14 @@ import ProgressRing from '../components/ProgressRing';
 import MoodExplorer from '../components/MoodExplorer';
 import { ChapterGridSkeleton } from '../components/LoadingSkeleton';
 import { useNavigate, Link } from 'react-router-dom';
+import type { ViewMode } from '../lib/constants';
 
 export default function Home() {
   const { data, isLoading } = usePsalms();
+  const { data: dailyData } = useDaily();
   const { streaks } = useStreaks();
   const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<ViewMode>('books');
 
   const handleRandom = () => {
     const ch = Math.floor(Math.random() * 150) + 1;
@@ -113,16 +117,46 @@ export default function Home() {
       {/* Chapter Grid */}
       <div>
         <h2
-          className="text-2xl font-bold mb-4"
+          className="text-2xl font-bold mb-3"
           style={{ fontFamily: 'var(--font-heading)' }}
         >
           כל הפרקים
         </h2>
 
+        {/* View mode toggle */}
+        <div className="flex gap-2 mb-5">
+          {([
+            { mode: 'books' as ViewMode, label: 'ספרים' },
+            { mode: 'weekly' as ViewMode, label: 'שבועי' },
+            { mode: 'monthly' as ViewMode, label: 'חודשי' },
+          ]).map(({ mode, label }) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className="px-4 py-1.5 rounded-full text-sm cursor-pointer border-0 transition-all duration-200"
+              style={{
+                backgroundColor: viewMode === mode ? 'var(--color-primary)' : 'var(--bg-card)',
+                color: viewMode === mode ? 'var(--color-accent)' : 'var(--text-muted)',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: viewMode === mode ? 600 : 400,
+                border: viewMode === mode
+                  ? '1px solid var(--color-primary-light)'
+                  : '1px solid var(--border-color)',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
         {isLoading ? (
           <ChapterGridSkeleton />
         ) : (
-          <ChapterGrid cachedChapters={cachedChapters} />
+          <ChapterGrid
+            cachedChapters={cachedChapters}
+            viewMode={viewMode}
+            hebrewDayOfMonth={dailyData?.day_of_month}
+          />
         )}
 
         {data && data.cached < 150 && (
