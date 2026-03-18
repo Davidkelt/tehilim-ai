@@ -72,6 +72,34 @@ export function initDatabase(): void {
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
+
+    CREATE TABLE IF NOT EXISTS dedication_events (
+      id TEXT PRIMARY KEY,
+      occasion_type TEXT NOT NULL,
+      name TEXT NOT NULL,
+      parent_name TEXT,
+      gender TEXT NOT NULL DEFAULT 'male',
+      dedication_text TEXT NOT NULL,
+      creator_name TEXT,
+      completed_chapters INTEGER NOT NULL DEFAULT 0,
+      participant_count INTEGER NOT NULL DEFAULT 0,
+      is_completed INTEGER NOT NULL DEFAULT 0,
+      completed_at TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS dedication_claims (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      event_id TEXT NOT NULL REFERENCES dedication_events(id),
+      chapter INTEGER NOT NULL,
+      participant_name TEXT,
+      participant_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'claimed',
+      claimed_at TEXT DEFAULT (datetime('now')),
+      completed_at TEXT,
+      UNIQUE(event_id, chapter)
+    );
+    CREATE INDEX IF NOT EXISTS idx_claims_event ON dedication_claims(event_id);
   `);
 
   console.log('[DB] Tables initialized successfully.');

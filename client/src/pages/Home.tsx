@@ -109,6 +109,19 @@ export default function Home() {
         >
           🔍 חיפוש
         </button>
+        <button
+          onClick={() => navigate('/dedicate/new')}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl cursor-pointer border-0 transition-all duration-200 hover:scale-105 active:scale-95"
+          style={{
+            backgroundColor: 'var(--bg-card)',
+            color: 'var(--text-primary)',
+            fontFamily: 'var(--font-heading)',
+            fontWeight: 500,
+            border: '1px solid var(--border-color)',
+          }}
+        >
+          🤝 הקדשה קבוצתית
+        </button>
       </div>
 
       {/* Mood Explorer */}

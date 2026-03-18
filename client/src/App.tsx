@@ -14,6 +14,9 @@ const SearchPage = lazy(() => import('./pages/SearchPage'));
 const AchievementsPage = lazy(() => import('./pages/AchievementsPage'));
 const StatsPage = lazy(() => import('./pages/StatsPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
+const CreateDedication = lazy(() => import('./pages/CreateDedication'));
+const DedicationEvent = lazy(() => import('./pages/DedicationEvent'));
+const DedicationChapterView = lazy(() => import('./pages/DedicationChapterView'));
 
 export default function App() {
   // Initialize settings (applies dark mode)
@@ -39,6 +42,9 @@ export default function App() {
             <Route path="/achievements" element={<AchievementsPage />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/dedicate/new" element={<CreateDedication />} />
+            <Route path="/dedicate/:eventId" element={<DedicationEvent />} />
+            <Route path="/dedicate/:eventId/read/:chapter" element={<DedicationChapterView />} />
           </Routes>
         </Suspense>
       </Layout>

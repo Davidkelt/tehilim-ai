@@ -13,6 +13,7 @@ import dailyRoutes from './routes/daily.js';
 import searchRoutes from './routes/search.js';
 import moodsRoutes from './routes/moods.js';
 import userRoutes from './routes/user.js';
+import dedicationsRoutes from './routes/dedications.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
@@ -116,6 +117,7 @@ app.use('/api/daily', dailyRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/moods', moodsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/dedications', dedicationsRoutes);
 
 // API 404 handler (before SPA fallback)
 app.use('/api', (_req, res) => {
