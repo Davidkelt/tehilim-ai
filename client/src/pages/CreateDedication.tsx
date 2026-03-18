@@ -5,7 +5,7 @@ import { setParticipantName } from '../lib/participant';
 import type { OccasionType } from '../lib/api';
 
 const OCCASIONS: { type: OccasionType; label: string; icon: string; parentLabel: 'mother' | 'father' | null }[] = [
-  { type: 'refua', label: 'רפואה שלמה', icon: '💊', parentLabel: 'mother' },
+  { type: 'refua', label: 'רפואה שלמה', icon: '❤️‍🩹', parentLabel: 'mother' },
   { type: 'ilui_nishmat', label: 'עילוי נשמת', icon: '🕯️', parentLabel: 'father' },
   { type: 'hatzlacha', label: 'הצלחה', icon: '🌟', parentLabel: 'mother' },
   { type: 'zivug', label: 'זיווג הגון', icon: '💍', parentLabel: 'mother' },
@@ -34,9 +34,12 @@ export default function CreateDedication() {
   const [parentName, setParentName] = useState('');
   const [gender, setGender] = useState<'male' | 'female'>('male');
   const [creatorName, setCreatorName] = useState('');
+  const [parentType, setParentType] = useState<'mother' | 'father'>('father');
 
   const occasion = OCCASIONS.find(o => o.type === occasionType);
   const needsParent = occasion?.parentLabel !== null;
+  // For ilui_nishmat: user can choose mother/father. Others: always mother.
+  const effectiveParentType = occasionType === 'ilui_nishmat' ? parentType : 'mother';
 
   const previewText = occasionType
     ? needsParent && parentName
@@ -216,19 +219,48 @@ export default function CreateDedication() {
                   </div>
                 </div>
 
+                {/* Parent type toggle — only for ilui_nishmat */}
+                {occasionType === 'ilui_nishmat' && (
+                  <div className="mb-4">
+                    <label
+                      className="block text-sm font-medium mb-1.5"
+                      style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-secondary)' }}
+                    >
+                      שם ההורה
+                    </label>
+                    <div className="flex gap-2">
+                      {([['father', 'שם האב'], ['mother', 'שם האם']] as const).map(([pt, label]) => (
+                        <button
+                          key={pt}
+                          onClick={() => setParentType(pt)}
+                          className="flex-1 py-2.5 rounded-xl cursor-pointer border-0 text-sm font-medium transition-all"
+                          style={{
+                            backgroundColor: parentType === pt ? 'var(--color-primary)' : 'var(--bg-primary)',
+                            color: parentType === pt ? 'var(--color-accent)' : 'var(--text-muted)',
+                            fontFamily: 'var(--font-heading)',
+                            border: `1px solid ${parentType === pt ? 'var(--color-primary)' : 'var(--border-color)'}`,
+                          }}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Parent name */}
                 <div className="mb-4">
                   <label
                     className="block text-sm font-medium mb-1.5"
                     style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-secondary)' }}
                   >
-                    {occasion?.parentLabel === 'father' ? 'שם האב' : 'שם האם'}
+                    {effectiveParentType === 'father' ? 'שם האב' : 'שם האם'}
                   </label>
                   <input
                     type="text"
                     value={parentName}
                     onChange={e => setParentName(e.target.value)}
-                    placeholder={occasion?.parentLabel === 'father' ? 'שם האב' : 'שם האם'}
+                    placeholder={effectiveParentType === 'father' ? 'שם האב' : 'שם האם'}
                     className="w-full px-4 py-3 rounded-xl text-base border-0 outline-none"
                     style={{
                       backgroundColor: 'var(--bg-primary)',

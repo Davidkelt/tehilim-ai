@@ -5,7 +5,7 @@ interface Props {
 }
 
 const OCCASION_ICONS: Record<string, string> = {
-  refua: '💊',
+  refua: '❤️‍🩹',
   ilui_nishmat: '🕯️',
   hatzlacha: '🌟',
   zivug: '💍',
