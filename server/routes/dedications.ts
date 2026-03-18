@@ -1,6 +1,10 @@
 import { Router } from 'express';
-import { nanoid } from 'nanoid';
+import crypto from 'crypto';
 import { getDb } from '../db/database.js';
+
+function generateId(length = 8): string {
+  return crypto.randomBytes(length).toString('base64url').slice(0, length);
+}
 
 const router = Router();
 
@@ -43,7 +47,7 @@ router.post('/', (req, res) => {
 
     const g = gender === 'female' ? 'female' : 'male';
     const dedicationText = composeDedicationText(occasion_type, name, parent_name || null, g);
-    const id = nanoid(8);
+    const id = generateId(8);
 
     const db = getDb();
     db.prepare(`
